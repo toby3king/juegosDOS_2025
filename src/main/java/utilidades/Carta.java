@@ -2,7 +2,7 @@ package utilidades;
 
 public interface Carta {
 
-    String toString();
+    String descripcion();
     String getValue();
     String getColoro();
 }
