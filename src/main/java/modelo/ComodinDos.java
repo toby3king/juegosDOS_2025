@@ -2,7 +2,7 @@ package modelo;
 
 import utilidades.Carta;
 
-public class CartaC2 implements Carta {
+public class ComodinDos extends Carta {
 
     final Integer numero=2;
 
@@ -19,6 +19,18 @@ public class CartaC2 implements Carta {
 
     @Override
     public String getColoro() {
-        return "null";
+        return "";
     }
+
+    @Override
+    public Boolean isNumericComodin() {
+        return false;
+    }
+
+    @Override
+    public Boolean isColorComodin() {
+        return true;
+    }
+
+
 }

@@ -1,8 +1,10 @@
 package utilidades;
 
-public interface Carta {
+public abstract class Carta {
 
-    String descripcion();
-    String getValue();
-    String getColoro();
+     abstract String descripcion();
+     abstract String getValue();
+     abstract String getColoro();
+     abstract Boolean isNumericComodin();
+     abstract Boolean isColorComodin();
 }

@@ -3,11 +3,11 @@ package modelo;
 import utilidades.Carta;
 import utilidades.Colores;
 
-public class CartaCnumeral implements Carta {
+public class ComodinNumeral extends Carta {
 
     private Colores color;
 
-    public CartaCnumeral(Colores color) {
+    public ComodinNumeral(Colores color) {
         this.color = color;
     }
 
@@ -18,12 +18,22 @@ public class CartaCnumeral implements Carta {
 
     @Override
     public String getValue() {
-        return "null";
+        return "0";
     }
 
     @Override
     public String getColoro() {
         return color.toString();
+    }
+
+    @Override
+    public Boolean isNumericComodin() {
+        return true;
+    }
+
+    @Override
+    public Boolean isColorComodin() {
+        return  false;
     }
 
     public Colores getColor() {
