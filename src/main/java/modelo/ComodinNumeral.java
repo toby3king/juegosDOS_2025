@@ -22,7 +22,7 @@ public class ComodinNumeral extends Carta {
     }
 
     @Override
-    public String getColoro() {
+    public String getColor() {
         return color.toString();
     }
 
@@ -36,7 +36,4 @@ public class ComodinNumeral extends Carta {
         return  false;
     }
 
-    public Colores getColor() {
-        return color;
-    }
 }

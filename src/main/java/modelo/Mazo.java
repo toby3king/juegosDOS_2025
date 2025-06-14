@@ -24,12 +24,12 @@ public class Mazo {
 
                 int repeticiones = (i <= 5) ? 3 : 2;
                 for (int j = 0; j < repeticiones; j++) {
-                    baraja.add(new CartaNormal(c[k], i));
+                    baraja.add(new Numerada(c[k], i));
                 }
             }
 
-            for (int h = 0; h < 3; h++) baraja.add(new CartaC2());
-            for (int h = 0; h < 2; h++) baraja.add(new CartaCnumeral(c[k]));
+            for (int h = 0; h < 3; h++) baraja.add(new ComodinDos());
+            for (int h = 0; h < 2; h++) baraja.add(new ComodinNumeral(c[k]));
         }
     }
 

@@ -39,7 +39,7 @@ public class Mesa {
 
         player.mano.removeCard(cartaACombinar);
 
-        if( cartasEnJuego.get(idxCartaDeMesa).getColoro().contains(cartaACombinar.getColoro()) )
+        if( cartasEnJuego.get(idxCartaDeMesa).getColor().contains(cartaACombinar.getColor()) )
         {
             colorEfect=true;
         }

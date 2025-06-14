@@ -1,11 +1,14 @@
 package modelo;
 
 import utilidades.Carta;
+import utilidades.Colores;
 
 public class ComodinDos extends Carta {
 
-    final Integer numero=2;
-
+    public ComodinDos() {
+        this.color= Colores.cualquiera;
+        this.numero=2;
+    }
 
     @Override
     public String descripcion() {
@@ -18,7 +21,7 @@ public class ComodinDos extends Carta {
     }
 
     @Override
-    public String getColoro() {
+    public String getColor() {
         return "";
     }
 

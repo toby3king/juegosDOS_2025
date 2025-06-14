@@ -5,29 +5,26 @@ import utilidades.Colores;
 
 public class Numerada extends Carta {
 
-    Integer numeroDeCarta;
-
-    Colores color;
 
     public Numerada(Colores color,int numeroDeCarta)
     {
         this.color=color;
-        this.numeroDeCarta=(Integer) numeroDeCarta;
+        this.numero=(Integer) numeroDeCarta;
     }
 
 
     @Override
     public String descripcion() {
-        return "carta numero: "+this.numeroDeCarta.toString()+" color: "+color.toString();
+        return "carta numero: "+this.getValue()+" color: "+color.toString();
     }
 
     @Override
     public String getValue() {
-        return  numeroDeCarta.toString();
+        return  this.numero.toString();
     }
 
     @Override
-    public String getColoro() {
+    public String getColor() {
         return color.toString();
     }
 
