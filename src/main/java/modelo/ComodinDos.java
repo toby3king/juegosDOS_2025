@@ -16,13 +16,13 @@ public class ComodinDos extends Carta {
     }
 
     @Override
-    public String getValue() {
-        return "2";
+    public Integer getValue() {
+        return 2;
     }
 
     @Override
-    public String getColor() {
-        return "";
+    public Colores getColor() {
+        return this.color;
     }
 
     @Override
@@ -36,4 +36,36 @@ public class ComodinDos extends Carta {
     }
 
 
+    @Override
+    public boolean jugadaSimplePosible(Carta mesa) {
+        return mesa.isNumericComodin() || this.numero.equals(mesa.numero);//si en la mesa hay un comodin o coincide el numero es valida
+    }
+
+    @Override
+    public boolean juagadaDoblePosible(Carta mesa, Carta dupla) {
+        if (mesa.numero.equals(1))
+        {
+            return false;
+        }
+        if (mesa.isNumericComodin())
+        {return true;}
+
+        if(!dupla.isNumericComodin())
+        {
+            if (dupla.numero + this.numero != mesa.numero)//si la dupla no es un comodin y la suma de numeros no es igual.
+            {return false;}
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean efectoColorSimple(Carta mesa) {
+        return true;
+    }
+
+    @Override
+    public boolean efectoColorDoble(Carta mesa, Carta dupla) {
+        return dupla.efectoColorSimple(mesa);
+    }
 }

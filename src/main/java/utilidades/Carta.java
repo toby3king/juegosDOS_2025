@@ -1,6 +1,6 @@
 package utilidades;
 
-public abstract class Carta {
+public abstract class Carta implements Jugable {
 
     public Integer numero;
     public Colores color;
@@ -16,8 +16,8 @@ public abstract class Carta {
     }
 
     public abstract String descripcion();
-    public abstract String getValue();
-    public abstract String getColor();  // o getColor(), si lo vas a renombrar
+    public abstract Integer getValue();
+    public abstract Colores getColor();  // o getColor(), si lo vas a renombrar
     public abstract Boolean isNumericComodin();
     public abstract Boolean isColorComodin();
 }

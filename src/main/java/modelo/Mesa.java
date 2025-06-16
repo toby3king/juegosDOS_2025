@@ -8,17 +8,20 @@ import java.util.List;
 
 public class Mesa {
 
-    private List<Jugador> jugadores;
+    private final List<Jugador> jugadores;
     private Turno turno;
-    private List<Carta> descarte;
-    private Boolean colorEfect;
+    private final PilaDeDescarte descarte;
+
+
     private List<Carta> cartasEnJuego;
     private Mazo masoDeJuego;
+
+    private Boolean colorEfect;
     private Boolean colorEfectPlus;
 
     public Mesa(List<Jugador> jugadores) {
         this.jugadores = jugadores;
-        descarte=new ArrayList<>();
+        descarte=new PilaDeDescarte();
         colorEfect=false;
         colorEfectPlus=false;
 
@@ -30,12 +33,12 @@ public class Mesa {
         {return false;}
 
 
-        if ( !cartaACombinar.isNumericComodin()  ) //si los valores no coinciden se rechaza la jugada
+        if ( !cartaACombinar.jugadaSimplePosible(cartasEnJuego.get(idxCartaDeMesa)) ) //si los valores no coinciden se rechaza la jugada
         {return false;}
 
         Carta aux= cartasEnJuego.remove(idxCartaDeMesa);
-        this.descarte.add(aux);
-        this.descarte.add(cartaACombinar);
+        this.descarte.descartar(aux);
+        this.descarte.descartar(cartaACombinar);
 
         player.mano.removeCard(cartaACombinar);
 
