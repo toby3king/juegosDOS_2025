@@ -12,7 +12,7 @@ public class ComodinDos extends Carta {
 
     @Override
     public String descripcion() {
-        return "comodin 2";
+        return "|| 2 clq !!";
     }
 
     @Override

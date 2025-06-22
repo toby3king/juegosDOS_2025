@@ -10,9 +10,12 @@ import java.util.List;
 public class Mazo {
 
     private LinkedList<Carta> cartas;
+    private PilaDeDescarte descarte;
 
-    public Mazo() {
+
+    public Mazo(PilaDeDescarte p) {
         this.cartas = new LinkedList<>();
+        this.descarte=p;
     }
 
     public void crearBarajaDeJuego() {
@@ -32,6 +35,7 @@ public class Mazo {
             for (int h = 0; h < 3; h++) cartas.push(new ComodinDos());
             for (int h = 0; h < 2; h++) cartas.push(new ComodinNumeral(c[k]));
         }
+        mezclarMazo();
     }
 
     public void mezclarMazo() {
@@ -39,11 +43,14 @@ public class Mazo {
     }
 
     public Carta robarCarta() {
-        if (!cartas.isEmpty()) {
-            return cartas.pop(); // como en una pila: saca el tope
+        if (!cartas.isEmpty())
+        {
+            return cartas.pop(); // como en una pila: remuve y retorna el ultimo elemnto
         } else {
-            System.out.println("El mazo está vacío.");
-            return null;
+
+            this.RestaurarMazo();//le da la pila de descarte y la mezcla, tambien vaciando la misma
+
+            return cartas.pop();
         }
     }
 
@@ -61,6 +68,15 @@ public class Mazo {
         } else {
             System.out.println("El mazo está vacío.");
         }
+    }
+
+    void RestaurarMazo()
+    {
+        this.cartas=new LinkedList<>(this.descarte.RetornarPila());
+
+        this.descarte.vaciarPilaDeDescarte();
+
+        this.mezclarMazo();
     }
 }
 

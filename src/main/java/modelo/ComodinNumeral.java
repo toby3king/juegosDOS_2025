@@ -13,7 +13,7 @@ public class ComodinNumeral extends Carta {
 
     @Override
     public String descripcion() {
-        return "comodin numeral, color: "+this.color.toString();
+        return "|| #,"+this.color.toString()+" ||";
     }
 
     @Override

@@ -19,11 +19,10 @@ public class HandCards {
 
     public void removeCard(Carta cartaAEliminar)
     {
-        mano.remove(cartaAEliminar);
-
+         mano.remove(cartaAEliminar);
     }
 
-    int cartasEnMano()
+    int cantidadDeCartasEnMano()
     {
         return mano.size();
     }

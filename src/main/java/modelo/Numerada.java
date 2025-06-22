@@ -15,7 +15,7 @@ public class Numerada extends Carta {
 
     @Override
     public String descripcion() {
-        return "carta numero: "+this.getValue()+" color: "+color.toString();
+        return "|| "+this.getValue().toString()+"."+color.toString()+" ||";
     }
 
     @Override
