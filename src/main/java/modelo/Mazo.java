@@ -16,6 +16,7 @@ public class Mazo {
     public Mazo(PilaDeDescarte p) {
         this.cartas = new LinkedList<>();
         this.descarte=p;
+        crearBarajaDeJuego();
     }
 
     public void crearBarajaDeJuego() {

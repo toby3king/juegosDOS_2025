@@ -3,6 +3,7 @@ package modelo;
 import utilidades.Carta;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class MesaDeJuego {
 
@@ -34,6 +35,11 @@ public class MesaDeJuego {
     public Carta obtenerCarta(int indx)
     {
         return cardsInGame.get(indx);
+    }
+
+    LinkedList<Carta> obtenerMesa()
+    {
+        return new LinkedList<Carta>(cardsInGame);
     }
 
 

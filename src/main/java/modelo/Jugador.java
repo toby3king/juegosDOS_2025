@@ -3,7 +3,10 @@ package modelo;
 import jdk.jshell.execution.JdiExecutionControl;
 import utilidades.Carta;
 
+import java.util.LinkedList;
+
 public class Jugador {
+    private static int ID=0;
     private int id;
     private String nombre;
     private Mesa tablero;
@@ -35,10 +38,10 @@ public class Jugador {
         return false;
     }
 
-    public Jugador(Mesa tablero, String nombre, int id) {
+    public Jugador(Mesa tablero, String nombre) {
         this.tablero = tablero;
         this.nombre = nombre;
-        this.id = id;
+        this.id = ID++;
         this.mano = new HandCards();
         this.dosState=false;
     }
@@ -62,6 +65,11 @@ public class Jugador {
     int cartasRestantes()
     {
         return mano.cantidadDeCartasEnMano();
+    }
+
+    LinkedList<Carta> cartasDelJugador()
+    {
+        return new LinkedList<>(mano.obtenerMano());
     }
 
 

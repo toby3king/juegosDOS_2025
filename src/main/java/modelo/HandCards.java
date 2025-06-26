@@ -26,4 +26,9 @@ public class HandCards {
     {
         return mano.size();
     }
+
+    LinkedList<Carta> obtenerMano()
+    {
+        return mano;
+    }
 }

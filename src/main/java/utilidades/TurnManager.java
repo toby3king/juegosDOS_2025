@@ -2,6 +2,7 @@ package utilidades;
 
 import modelo.Jugador;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class TurnManager {
@@ -13,8 +14,8 @@ public class TurnManager {
 
     public TurnManager(List<Jugador> jugadores)
     {
-        this.jugadores=jugadores;
-        this.cantidad_jugadores=jugadores.size();
+        this.jugadores=new LinkedList<>();
+        this.cantidad_jugadores= jugadores.size();
         this.jugadorEnTurno=jugadores.getFirst();
 
     }

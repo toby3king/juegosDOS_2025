@@ -1,43 +1,90 @@
 package modelo;
 
+import observer.EventoEsperable;
+import observer.IObserver;
+import observer.ISubject;
 import utilidades.Carta;
 import utilidades.TurnManager;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+public class Mesa implements ISubject {
 
-/**
-* es la clase principal del juego, encargada de controlar las jugadas y las penalizaciones aplicadas a los jugadores
- * */
-public class Mesa {
-
+    List<IObserver> observadores;
     private final List<Jugador> jugadores;
-    private final TurnManager controlDeTurno;
+    private  TurnManager controlDeTurno;
     private final PilaDeDescarte descarte;
     private final Mazo masoDeJuego;
     private final MesaDeJuego cartasEnMesa;
-    private Integer colorEfect;
-    private Boolean colorEfectPlus;
+
+    //flags
+
     private boolean tomoDeCartaPermitido;
-    private Jugador jugadorActual;
+    private Boolean colorEfectPlus;
     private boolean penalizacionDos;
+    private boolean esPosbJugar;
+    private boolean esPosbFinDeJugada;
+    private boolean faseDeDescarte;
+    /*-----------------------------------------------*/
 
-    public Mesa(List<Jugador> jugadores,TurnManager controlDeTurno) {
+    private Integer colorEfect;
+    private Jugador jugadorActual;
+    private int cantidadEsperadaDeJugadores;
 
-        this.controlDeTurno=controlDeTurno;
-        this.jugadores = jugadores;
-        this.colorEfect=0;
-        this.colorEfectPlus=false;
-        this.descarte=new PilaDeDescarte();
-        this.masoDeJuego=new Mazo(descarte);
-        this.cartasEnMesa=new MesaDeJuego(masoDeJuego.robarCarta(), masoDeJuego.robarCarta());
-        this.jugadorActual=controlDeTurno.getJugadorEnTurno();
-        this.tomoDeCartaPermitido=true;
-        this.penalizacionDos=false;
+    public Mesa() {
+        this.observadores=new ArrayList<>();
+        this.jugadores = new ArrayList<>();
+        this.descarte = new PilaDeDescarte();
+        this.masoDeJuego = new Mazo(descarte);
+        this.cartasEnMesa = new MesaDeJuego(masoDeJuego.robarCarta(), masoDeJuego.robarCarta());
+        this.colorEfect = 0;
+
+        //inicializacion de los flags
+        this.colorEfectPlus = false;
+        this.tomoDeCartaPermitido = true;
+        this.penalizacionDos = false;
+        this.esPosbJugar=true;
+        this.faseDeDescarte=false;
+        this.cantidadEsperadaDeJugadores=0;
+    }
+
+    public boolean setCantidadEsperadaDeJugadores(int cantidad) {
+        if (cantidadEsperadaDeJugadores!=0)
+        {
+            return false;
+        }
+        this.cantidadEsperadaDeJugadores = cantidad;
+        return true;
+    }
+
+    public Jugador addJugador(String nombre) {
+        Jugador nuevoJugador = new Jugador(this, nombre);
+        jugadores.add(nuevoJugador);
+
+        notificar(EventoEsperable.UNION_DE_JUGADOR, "El jugador " + nombre + " se ha unido");
+
+        if (jugadores.size() < cantidadEsperadaDeJugadores) {
+            notificar(EventoEsperable.ESPERA_DE_JUGADOR, "Estamos esperando a que los jugadores se unan");
+        }
+
+        return nuevoJugador;
+    }
+
+    public void iniciarJuego() {
+        System.out.println("¡Todos los jugadores conectados! Iniciando el juego...");// obs
+        this.controlDeTurno = new TurnManager(jugadores);
+        this.jugadorActual = controlDeTurno.getJugadorEnTurno();
 
         repartirMano();
 
 
+
+        notificar(EventoEsperable.CAMBIO_EN_MANO,"se ah repartido la mano");
+        notificar(EventoEsperable.CAMBIO_EN_MESA,"se repartio la mesa");
+
     }
+
 
     /**
      * reparte la mano inicial a cada jugador, iterando sobre la lista de jugadores, añadiendo a su mano cartas que saca del mazo
@@ -79,9 +126,9 @@ public class Mesa {
      * @param cartaACombinar
      * @return retorna un booleano que determina si es posible realizar la jugada
      */
-    Boolean hacer_jugada(Jugador player, int idxCartaDeMesa, Carta cartaACombinar)
+    public Boolean hacer_jugada(Jugador player, int idxCartaDeMesa, Carta cartaACombinar)
     {
-        if (!jugadorActual.equals(player))// si no es su turno rechaza la jugada
+        if (jugadorActual==null||!jugadorActual.equals(player))// si no es su turno rechaza la jugada
         {return false;}
 
 
@@ -103,6 +150,11 @@ public class Mesa {
 
         controlarDos();
         tomoDeCartaPermitido=false;
+        esPosbFinDeJugada=true;
+
+        notificar(EventoEsperable.CAMBIO_EN_MANO,"");
+        notificar(EventoEsperable.CAMBIO_EN_MESA,"el jugador: "+jugadorActual.getName()+ "ah hecho juego");
+
         return true;
     }
 
@@ -114,10 +166,10 @@ public class Mesa {
      * @param dupla
      * @return retorna un booleano que determina si es posible realizar la jugada
      */
-    Boolean hacer_jugada(Jugador player,int idxCartaDeMesa,Carta cartaACombinar,Carta dupla)
+    public Boolean hacer_jugada(Jugador player,int idxCartaDeMesa,Carta cartaACombinar,Carta dupla)
     {
 
-        if (!jugadorActual.equals(player))// si no es su turno rechaza la jugada
+        if (jugadorActual==null||!jugadorActual.equals(player))// si no es su turno rechaza la jugada
         {
             return false;
         }
@@ -144,28 +196,22 @@ public class Mesa {
         jugadorActual.quitarCarta(cartaACombinar); //remueve las cartas de la mano del jugador
         jugadorActual.quitarCarta(dupla);//remueve las cartas de la mano del jugador
 
-        //de retirar de la mano se encarga el jugador
-
-
 
         //aplica penalizaciones del dos,si es el caso
         controlarDos();
+
         //impide que se robe carta despues de realizar jugada
         tomoDeCartaPermitido=false;
+
+        esPosbFinDeJugada=true;//habilita pasar el turno
+
+        notificar(EventoEsperable.CAMBIO_EN_MANO,"");
+        notificar(EventoEsperable.CAMBIO_EN_MESA,"el jugador: "+jugadorActual.getName()+ "ah hecho juego");
+
         return true;
     }
 
-    void doColorEfect(Carta paraLaMesa)
-    {
-        if (jugadorActual.cartasRestantes()<=colorEfect)
-        {
-            //aca ganas
-        }
-        for (int i=0;i<colorEfect;i++)
-        {
-            cartasEnMesa.agregarCartaALaMesa(paraLaMesa);
-        }
-    }
+
 
     void doColorEfectPlus()
     {
@@ -174,19 +220,17 @@ public class Mesa {
             if ( !p.equals(jugadorActual) )
             {p.darCarta(masoDeJuego.robarCarta());}
         }
+        notificar(EventoEsperable.CAMBIO_EN_MANO,"el jugador "+jugadorActual.getName()+" ah logrado un color doble");
     }
 
-    boolean tomarCarta(Jugador player)
+    public boolean tomarCarta(Jugador player)
     {
-        if (!jugadorActual.equals(player))
+        if (jugadorActual==null|| !jugadorActual.equals(player) || !tomoDeCartaPermitido)//si no es el turno o no puede tomar carta ret false
         {
             return false;
         }
 
-        if (!tomoDeCartaPermitido)
-        {
-            return false;
-        }
+
 
         player.darCarta(masoDeJuego.robarCarta());
 
@@ -196,13 +240,17 @@ public class Mesa {
         //impide tomar carta mas de una vez
         tomoDeCartaPermitido=false;
 
+        esPosbFinDeJugada=true;//valida que puedas pasar el turno
+
+        notificar(EventoEsperable.CAMBIO_EN_MANO,"");
+
         return true;
     }
 
 
-    Boolean finDeTurno(Jugador player)
+    public Boolean finalDeJugada(Jugador player)
     {
-        if (!jugadorActual.equals(player))// si no es su turno rechaza la jugada
+        if (jugadorActual==null|| !jugadorActual.equals(player) || !esPosbFinDeJugada)// si no es su turno rechaza la jugada
         {return false;}
 
         doPenalizacionDos();//aca chequeo penalizacion antes de aplicar los efectos de color
@@ -211,31 +259,115 @@ public class Mesa {
         {
             doColorEfectPlus();
         }
+        colorEfectPlus=false;//lo seteo despues de aplicar penalizacion
+
+        if (player.cartasRestantes()==0)
+        {
+            finDelJuego();//ganaste
+        }
 
 
-        while (cartasEnMesa.MIN_CARTAS< cartasEnMesa.tamanioDeMesa())
+
+        esPosbJugar=false;
+        penalizacionDos=false;
+        colorEfectPlus=false;//setea el penalizador a false
+
+        esPosbFinDeJugada=false;
+        this.faseDeDescarte=true;
+        return true;
+        //avisale que tiene que tirar las cartubis el nenubi
+    }
+
+    public boolean darCartaALaMesa(Jugador player,Carta carta)
+    {
+        if(jugadorActual==null|| !jugadorActual.equals(player))
+        {return false;}
+        if (!faseDeDescarte)
+        {
+            return false;
+        }
+
+        player.quitarCarta(carta);
+        cartasEnMesa.agregarCartaALaMesa(carta);
+        colorEfect--;
+
+        if (player.cartasRestantes()==0)
+        {
+            return finDelJuego();
+        }
+        if (colorEfect==0)
+        {
+            return finDeTurno();
+        }
+        return false;
+    }
+    Boolean finDeTurno()
+    {
+
+        while (cartasEnMesa.tamanioDeMesa() < cartasEnMesa.MIN_CARTAS)
         {
             cartasEnMesa.agregarCartaALaMesa(masoDeJuego.robarCarta());
         }
 
-        colorEfect=0;//setea el descarte a false
-        colorEfectPlus=false;//setea el penalizador a false
+
+
+
+        tomoDeCartaPermitido=true;
+        penalizacionDos=false;
+
+
+
+
         controlDeTurno.CambioDeTurno();// avanza el turno al siguiente
         jugadorActual=controlDeTurno.getJugadorEnTurno();//actualizo el jugador actual
+
+        notificar(EventoEsperable.CAMBIO_EN_TURNO,"es el turno del jugador " +jugadorActual.getName() );
         tomoDeCartaPermitido=true;
         penalizacionDos=false;
 
         return true;
     }
 
-    void FinDelJuego()
+    boolean finDelJuego()
     {
-        System.out.println("el jugador "+jugadorActual.getName() +"ah ganado!!!!!");
+
+        //aca dar aviso por obs
+        notificar(EventoEsperable.GANADOR,"el jugador "+jugadorActual.getName() + " ah ganado");
+        return true;
     }
 
-        //programar decir dos.
 
+    @Override
+    public void agregarSubscriptor(IObserver observador) {
 
+        observadores.add(observador);
 
+    }
 
+    @Override
+    public void notificar(EventoEsperable e, String descripcion) {
+        for (IObserver o: observadores)
+        {
+            o.Update(e,descripcion);
+        }
+    }
+
+    public LinkedList<Carta> getTableCards()
+    {
+        return cartasEnMesa.obtenerMesa();
+
+    }
+    public LinkedList<Carta> getPlayerCards(Jugador player)
+    {
+        return player.cartasDelJugador();
+    }
+
+    public int getCantidadEsperadaDeJugadores() {
+        return cantidadEsperadaDeJugadores;
+    }
+
+    public int cantidadActualDeJugadores()
+    {
+        return jugadores.size();
+    }
 }
