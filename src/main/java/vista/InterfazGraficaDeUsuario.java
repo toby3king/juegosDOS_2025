@@ -56,39 +56,41 @@ public class InterfazGraficaDeUsuario {
             }
         });
 
-       //temporal hasta mejorar interfaz
-        mesaDeJuego.setRealizarButton(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String aux = mesaDeJuego.getComandoField().trim();
+       mesaDeJuego.setRealizarButton(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
 
-                if (aux.startsWith("hj")) {
-                    // hj(1,1) o hj(1,1,1)
-                    List<Integer> params = extraerParametros(aux);
-                    if (params.size() == 2) {
-                        controlador.JugarCarta(params.get(0), params.get(1));
-                    } else if (params.size() == 3) {
-                        controlador.JugarCarta(params.get(0), params.get(1), params.get(2));
-                    } else {
-                        mesaDeJuego.setMensaje("Formato de hj inválido");
-                    }
-                } else if (aux.startsWith("tc")) {
-                    // tc(1)
-                    List<Integer> params = extraerParametros(aux);
-                    if (params.size() == 1) {
-                        controlador.dejarCarta(params.get(0));
-                    } else {
-                        mesaDeJuego.setMensaje("Formato de tc inválido");
-                    }
-                } else if (aux.equals("tt")) {
-                    controlador.terminarJurgos();
-                } else if (aux.equals("rc")) {
-                    controlador.tomarCartaDelMazo();
-                } else {
-                    mesaDeJuego.setMensaje("Comando no reconocido");
-                }
-            }
-        });
+               String aux=mesaDeJuego.getComandoField();
+
+               if (aux.equals("tt"))
+               {
+                   controlador.terminarJurgos();
+               }
+               if (aux.equals("rc"))
+               {
+                   controlador.tomarCartaDelMazo();
+               }
+               if (aux.startsWith("hj"))
+               {
+                   String[] partes = aux.split(" ");//poner separados por espacios
+                   if (partes.length==3)
+                   {
+                       controlador.JugarCarta(Integer.parseInt(partes[1]),Integer.parseInt(partes[2]));//mesa,mano
+                   }
+                   else if(partes.length==4)
+                   {
+                       controlador.JugarCarta(Integer.parseInt(partes[1]),Integer.parseInt(partes[2]),Integer.parseInt(partes[3]));//mesa,mano,mano
+                   }
+                   System.out.println("no funciono");
+               }
+               if (aux.startsWith("tc"))
+               {
+                   String[] partes = aux.split(" ");
+
+                   controlador.dejarCarta(Integer.parseInt(partes[1]));
+               }
+           }
+       });
 
         //fin constructor
     }
@@ -140,26 +142,6 @@ public class InterfazGraficaDeUsuario {
 
 
 
-    //utilidades
-    //temporal hasta mejorar la interfaz:deprecated
-    private List<Integer> extraerParametros(String comando) {
-        List<Integer> params = new ArrayList<>();
-        try {
-            int start = comando.indexOf('(');
-            int end = comando.indexOf(')');
-            if (start != -1 && end != -1 && end > start) {
-                String contenido = comando.substring(start + 1, end);
-                String[] partes = contenido.split(",");
-                for (String parte : partes) {
-                    params.add(Integer.parseInt(parte.trim()));
-                }
-            }
-        } catch (NumberFormatException e) {
-            // Podés manejar el error si querés: mostrar mensaje, etc.
-            mesaDeJuego.setMensaje("Error en parámetros numéricos");
-        }
-        return params;
-    }
 
 
 }

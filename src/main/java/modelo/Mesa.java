@@ -128,6 +128,8 @@ public class Mesa implements ISubject {
      */
     public Boolean hacer_jugada(Jugador player, int idxCartaDeMesa, Carta cartaACombinar)
     {
+        System.out.println(masoDeJuego.cartasRestantes());
+
         if (jugadorActual==null||!jugadorActual.equals(player))// si no es su turno rechaza la jugada
         {return false;}
 
@@ -151,6 +153,7 @@ public class Mesa implements ISubject {
         controlarDos();
         tomoDeCartaPermitido=false;
         esPosbFinDeJugada=true;
+
 
         notificar(EventoEsperable.CAMBIO_EN_MANO,"");
         notificar(EventoEsperable.CAMBIO_EN_MESA,"el jugador: "+jugadorActual.getName()+ "ah hecho juego");
@@ -195,7 +198,7 @@ public class Mesa implements ISubject {
 
         jugadorActual.quitarCarta(cartaACombinar); //remueve las cartas de la mano del jugador
         jugadorActual.quitarCarta(dupla);//remueve las cartas de la mano del jugador
-
+        cartasEnMesa.removerCarta(idxCartaDeMesa);
 
         //aplica penalizaciones del dos,si es el caso
         controlarDos();
@@ -242,7 +245,7 @@ public class Mesa implements ISubject {
 
         esPosbFinDeJugada=true;//valida que puedas pasar el turno
 
-        notificar(EventoEsperable.CAMBIO_EN_MANO,"");
+        notificar(EventoEsperable.CAMBIO_EN_MANO,"ah robado carta");
 
         return true;
     }

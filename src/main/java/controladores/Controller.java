@@ -67,7 +67,7 @@ public class Controller implements IObserver
 
     public void tomarCartaDelMazo()
     {
-        if(modelo.tomarCarta(player))
+        if(!modelo.tomarCarta(player))
         {
             vista.enviarMsjAJugador("la accion no esta permitida");
         }
